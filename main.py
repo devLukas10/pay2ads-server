@@ -83,9 +83,9 @@ async def app_pay2ads_registe_users (req: Request):
     if len(res_2) > 0: return {"sms": "found-id"}
 
     refer_data = res_1[0]
-    my_referes = int(refer_data['reference_count'])
-    reference_bonus = int(refer_data['reference_bonus'])
-    balance = int(refer_data['balance'])
+    my_referes = float(refer_data['reference_count'])
+    reference_bonus = float(refer_data['reference_bonus'])
+    balance = float(refer_data['balance'])
     refere_email = refer_data['email']
     update_balance = balance + 10
     update_referes = my_referes + 1
