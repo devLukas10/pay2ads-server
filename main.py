@@ -66,7 +66,7 @@ class DBModuls:
 db_moduls = DBModuls()
 
 
-@app.get('/api')
+@app.get('/')
 async def api(req: Request):
     return {"sms": "api is building..."}
 
