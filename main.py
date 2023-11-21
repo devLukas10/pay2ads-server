@@ -169,7 +169,6 @@ try:
             update_clicks = clicks + 1
 
             db.execute(f"UPDATE users SET balance='{update_balance}' WHERE my_reference_link='{ids}' ")
-            time.sleep(2)
             db.execute(f"""
                 UPDATE users SET balance='{update_refere_balance}', reference_bonus='{update_refere_bonus}',
                 clicks='{update_clicks}' WHERE my_reference_link='{data['reference_link']}' 
