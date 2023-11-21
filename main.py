@@ -82,7 +82,7 @@ try:
         if len(res_2) > 0: return {"sms": "found-id"}
 
         refer_data = res_1[0]
-        my_referes = float(refer_data['reference_count'])
+        my_referes = int(refer_data['reference_count'])
         reference_bonus = float(refer_data['reference_bonus'])
         balance = float(refer_data['balance'])
         refere_email = refer_data['email']
@@ -321,8 +321,3 @@ except Exception as e:
 
 
 
-
-
-
-#PORT = 5000
-#uvicorn.run(app, host="0.0.0.0", port=PORT)
