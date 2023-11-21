@@ -151,8 +151,10 @@ async def app_pay2ads_update_balance_by_user(req: Request):
     data = user[0]
     if data['my_reference_link'] == data['reference_link']:
         balance = float(data['balance'])
+        clicks = int(data['clicks'])
+        update_clicks = clicks + 1
         update_balance = balance + get_balance
-        db.execute(f"UPDATE users SET balance='{update_balance}' WHERE my_reference_link='{ids}' ")
+        db.execute(f"UPDATE users SET balance='{update_balance}', clicks='{update_clicks}' WHERE my_reference_link='{ids}' ")
         db_conexions.commit()
         return {"sms": "sucess for admin"}
     else:
@@ -164,12 +166,14 @@ async def app_pay2ads_update_balance_by_user(req: Request):
         update_refere_balance = refere_balance + 1
         balance = float(data['balance'])
         update_balance = balance + get_balance
+        clicks = int(data['clicks'])
+        update_clicks = clicks + 1
 
         db.execute(f"UPDATE users SET balance='{update_balance}' WHERE my_reference_link='{ids}' ")
         time.sleep(2)
         db.execute(f"""
-            UPDATE users SET balance='{update_refere_balance}', reference_bonus='{update_refere_bonus}' 
-            WHERE my_reference_link='{data['reference_link']}' 
+            UPDATE users SET balance='{update_refere_balance}', reference_bonus='{update_refere_bonus}',
+            clicks='{update_clicks}' WHERE my_reference_link='{data['reference_link']}' 
         """)
         db_conexions.commit()
         return {"sms": "sucess users"}
