@@ -168,10 +168,10 @@ try:
             clicks = int(data['clicks'])
             update_clicks = clicks + 1
 
-            db.execute(f"UPDATE users SET balance='{update_balance}' WHERE my_reference_link='{ids}' ")
+            db.execute(f"UPDATE users SET balance='{update_balance}', clicks='{update_clicks}' WHERE my_reference_link='{ids}' ")
             db.execute(f"""
-                UPDATE users SET balance='{update_refere_balance}', reference_bonus='{update_refere_bonus}',
-                clicks='{update_clicks}' WHERE my_reference_link='{data['reference_link']}' 
+                UPDATE users SET balance='{update_refere_balance}', reference_bonus='{update_refere_bonus}',   
+                WHERE my_reference_link='{data['reference_link']}' 
             """)
             db_conexions.commit()
             return {"sms": "sucess users"}
