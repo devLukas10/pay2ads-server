@@ -170,7 +170,7 @@ try:
 
             db.execute(f"UPDATE users SET balance='{update_balance}', clicks='{update_clicks}' WHERE my_reference_link='{ids}' ")
             db.execute(f"""
-                UPDATE users SET balance='{update_refere_balance}', reference_bonus='{update_refere_bonus}',   
+                UPDATE users SET balance='{update_refere_balance}', reference_bonus='{update_refere_bonus}'   
                 WHERE my_reference_link='{data['reference_link']}' 
             """)
             db_conexions.commit()
