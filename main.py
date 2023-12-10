@@ -130,12 +130,12 @@ try:
         db_conexions.commit()
         time.sleep(1)
         db.execute(f"""INSERT INTO refers_list (id, username, email)
-            VALUES('{res['reference_count']}', '{res['username']}', '{res['email']}')
+            VALUES('{res['reference_link']}', '{res['username']}', '{res['email']}')
         """)
         db.execute(f"""INSERT INTO ibonx (id, titler, sms, icon, state, color)
-        VALUES('{res['reference_count']}','PiggyCoin','Alguém acabou por registrar com o teu código','person','','green')
+        VALUES('{res['reference_link']}','PiggyCoin','Alguém acabou por registrar com o teu código','person','','green')
         """)
-        db.execute(f"INSERT INTO ibonx_count (id) VALUES('{res['reference_count']}')")
+        db.execute(f"INSERT INTO ibonx_count (id) VALUES('{res['reference_link']}')")
         db_conexions.commit()
         payload = {
             "credential": {"id": res['my_refere_link']},
