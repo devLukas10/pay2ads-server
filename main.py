@@ -326,7 +326,7 @@ try:
         ids = res['id']
         data = db_moduls.findAll(f"ibonx_count WHERE id='{ids}' ")
         print(data)
-        print(id)
+        print(ids)
         return {"data": data}
     @app.post('/app_pay2ads_get_user_inbox_data')
     async def app_pay2ads_get_user_inbox_data(req: Request):
