@@ -49,6 +49,24 @@ try:
                 id TEXT, username TEXT, back_name TEXT, iban TEXT, number TEXT, valor TEXT, created_at TEXT
             )
         """)
+    db.execute("""
+            CREATE TABLE IF NOT EXISTS refers_list 
+            (
+                id TEXT, username TEXT, email TEXT
+            )
+        """)
+    db.execute("""
+            CREATE TABLE IF NOT EXISTS ibonx 
+            (
+                id TEXT, titler TEXT, sms TEXT, icon TEXT, state TEXT, color TEXT
+            )
+        """)
+    db.execute("""
+            CREATE TABLE IF NOT EXISTS ibonx_count
+            (
+                id TEXT
+            )
+        """)
     db_conexions.commit()
 #================================================================================
     # convert data to json files
@@ -83,8 +101,8 @@ try:
 
         refer_data = res_1[0]
         my_referes = int(refer_data['reference_count'])
-        reference_bonus = float(refer_data['reference_bonus'])
-        balance = float(refer_data['balance'])
+        reference_bonus = int(refer_data['reference_bonus'])
+        balance = int(refer_data['balance'])
         refere_email = refer_data['email']
         update_balance = balance + 10
         update_referes = my_referes + 1
@@ -95,7 +113,8 @@ try:
                 UPDATE users SET balance='{update_balance}', reference_bonus='{update_refere_bonus}',
                 reference_count='{update_referes}' WHERE email='{refere_email}'
         """)
-        time.sleep(2)
+        db_conexions.commit()
+        time.sleep(1)
         #creating a new user in the table
         db.execute(f"""INSERT INTO users 
         (
@@ -108,6 +127,15 @@ try:
             '{res['password']}','{res['created_at']}'
         )
         """)
+        db_conexions.commit()
+        time.sleep(1)
+        db.execute(f"""INSERT INTO refers_list (id, username, email)
+            VALUES('{res['reference_count']}', '{res['username']}', '{res['email']}')
+        """)
+        db.execute(f"""INSTERT INTO ibonx (id, titler, sms, icon, state, color)
+        VALUES('{res['reference_count']}','PiggyCoin','Alguém acabou por registrar com o teu código','person','','green')
+        """)
+        db.execute(f"INSERT INTO ibonx_count (id) VALUES('{res['reference_count']}')")
         db_conexions.commit()
         payload = {
             "credential": {"id": res['my_refere_link']},
@@ -145,11 +173,12 @@ try:
     async def app_pay2ads_update_balance_by_user(req: Request):
         res = await req.json()
         ids = res['id']
-        get_balance = 0.5
+        balances = res['balance']
+        get_balance = int(balances)
         user = db_moduls.findAll(f"users WHERE my_reference_link='{ids}' ")
         data = user[0]
         if data['my_reference_link'] == data['reference_link']:
-            balance = float(data['balance'])
+            balance = int(data['balance'])
             clicks = int(data['clicks'])
             update_clicks = clicks + 1
             update_balance = balance + get_balance
@@ -159,11 +188,11 @@ try:
         else:
             user2 = db_moduls.findAll(f"users WHERE my_reference_link='{data['reference_link']}' ")
             data2 = user2[0]
-            reference_bonus = float(data2['reference_bonus'])
-            refere_balance = float(data2['balance'])
-            update_refere_bonus = reference_bonus + 1
-            update_refere_balance = refere_balance + 1
-            balance = float(data['balance'])
+            reference_bonus = int(data2['reference_bonus'])
+            refere_balance = int(data2['balance'])
+            update_refere_bonus = reference_bonus + 10
+            update_refere_balance = refere_balance + 10
+            balance = int(data['balance'])
             update_balance = balance + get_balance
             clicks = int(data['clicks'])
             update_clicks = clicks + 1
