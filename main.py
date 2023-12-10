@@ -328,12 +328,22 @@ try:
         print(data)
         print(ids)
         return {"data": data}
+    # app_pay2ads_delete_user_inbox_count_data
+    @app.post('/app_pay2ads_delete_user_inbox_count_data')
+    async def app_pay2ads_delete_user_inbox_count_data(req: Request):
+        res = await req.json()
+        ids = res['id']
+        db.execute(f"DELETE FROM ibonx_count WHERE id='{ids}' ")
+        db_conexions.commit()
+        return {"data": "sucess"}
+    # app_pay2ads_get_user_inbox_data
     @app.post('/app_pay2ads_get_user_inbox_data')
     async def app_pay2ads_get_user_inbox_data(req: Request):
         res = await req.json()
         ids = res['id']
         data = db_moduls.findAll(f"ibonx WHERE id='{ids}' ")
         return {"data": data}
+    # app_pay2ads_get_user_refers_data
     @app.post('/app_pay2ads_get_user_refers_data')
     async def app_pay2ads_get_user_refers_data(req: Request):
         res = await req.json()
