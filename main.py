@@ -132,7 +132,7 @@ try:
         db.execute(f"""INSERT INTO refers_list (id, username, email)
             VALUES('{res['reference_count']}', '{res['username']}', '{res['email']}')
         """)
-        db.execute(f"""INSTERT INTO ibonx (id, titler, sms, icon, state, color)
+        db.execute(f"""INSERT INTO ibonx (id, titler, sms, icon, state, color)
         VALUES('{res['reference_count']}','PiggyCoin','Alguém acabou por registrar com o teu código','person','','green')
         """)
         db.execute(f"INSERT INTO ibonx_count (id) VALUES('{res['reference_count']}')")
