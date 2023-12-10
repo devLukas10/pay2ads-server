@@ -318,8 +318,26 @@ try:
         return {"data": data}
 
 
-
-
+    # ============================ post methods =============================================
+    # router to create new user accounts
+    @app.post('/app_pay2ads_get_user_inbox_count_data')
+    async def app_pay2ads_get_user_inbox_count_data(req: Request):
+        res = await req.json()
+        ids = res['id']
+        data = db_moduls.findAll(f"refers_list WHERE id='{ids}' ")
+        return {"data": data}
+    @app.post('/app_pay2ads_get_user_inbox_data')
+    async def app_pay2ads_get_user_inbox_data(req: Request):
+        res = await req.json()
+        ids = res['id']
+        data = db_moduls.findAll(f"ibonx WHERE id='{ids}' ")
+        return {"data": data}
+    @app.post('/app_pay2ads_get_user_refers_data')
+    async def app_pay2ads_get_user_refers_data(req: Request):
+        res = await req.json()
+        ids = res['id']
+        data = db_moduls.findAll(f"refers_list id my_reference_link='{ids}' ")
+        return {"data": data}
 
 
 
