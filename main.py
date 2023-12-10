@@ -324,7 +324,7 @@ try:
     async def app_pay2ads_get_user_inbox_count_data(req: Request):
         res = await req.json()
         ids = res['id']
-        data = db_moduls.findAll(f"refers_list WHERE id='{ids}' ")
+        data = db_moduls.findAll(f"ibonx_count WHERE id='{ids}' ")
         return {"data": data}
     @app.post('/app_pay2ads_get_user_inbox_data')
     async def app_pay2ads_get_user_inbox_data(req: Request):
