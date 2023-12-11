@@ -112,7 +112,7 @@ try:
             user_data = db_moduls.findAll(f"pay_offer WHERE id='{user_id}' ")
             db.execute(f"UPDATE offers_click SET dificulty='none' WHERE id='{user_id}' ")
             db_conexions.commit()
-
+    
 
     @app.get('/')
     async def api(req: Request):
