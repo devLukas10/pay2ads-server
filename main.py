@@ -87,28 +87,28 @@ try:
 # ============================ post methods =============================================
     db_moduls = DBModuls()
 
-    def update_offers(self, id, datas):
+    def update_offers(self, ids, datas):
         user_id = datas["id"]
         # update offers clicks
-        if id == "offers_click":
+        if ids == "offers_click":
             user_data = db_moduls.findAll(f"offers_click WHERE id='{user_id}' ")
             dificulty = int(user_data["dificulty"]) + int(datas["dificulty"])
             db.execute(f"UPDATE offers_click SET dificulty='{dificulty}' WHERE id='{user_id}' ")
             db_conexions.commit()
         # offers ref upadate
-        if id == "offers_ref":
+        if ids == "offers_ref":
             user_data = db_moduls.findAll(f"offers_ref WHERE id='{user_id}' ")
             dificulty = int(user_data["dificulty"]) + int(datas["dificulty"])
             db.execute(f"UPDATE offers_ref SET dificulty='{dificulty}' WHERE id='{user_id}' ")
             db_conexions.commit()
         # update offers game
-        if id == "offfers_game":
+        if ids == "offfers_game":
             user_data = db_moduls.findAll(f"offfers_game WHERE id='{user_id}' ")
             dificulty = int(user_data["dificulty"]) + int(datas["dificulty"])
             db.execute(f"UPDATE offfers_game SET dificulty='{dificulty}' WHERE id='{user_id}' ")
             db_conexions.commit()
         #update offers games
-        if id == "pay_offer":
+        if ids == "pay_offer":
             user_data = db_moduls.findAll(f"pay_offer WHERE id='{user_id}' ")
             db.execute(f"UPDATE offers_click SET dificulty='none' WHERE id='{user_id}' ")
             db_conexions.commit()
