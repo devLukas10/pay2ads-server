@@ -67,6 +67,11 @@ try:
                 id TEXT
             )
         """)
+    db.execute("CREATE TABLE IF NOT EXISTS offers_click (id TEXT, dificulty TEXT ) ")
+    db.execute("CREATE TABLE IF NOT EXISTS offers_ref (id TEXT, dificulty TEXT ) ")
+    db.execute("CREATE TABLE IF NOT EXISTS pay_offer (id TEXT,dificulty TEXT ) ")
+    db.execute("CREATE TABLE IF NOT EXISTS offfers_game (id TEXT, dificulty TEXT ) ")
+        
     db_conexions.commit()
 #================================================================================
     # convert data to json files
@@ -81,6 +86,32 @@ try:
 
 # ============================ post methods =============================================
     db_moduls = DBModuls()
+
+    def update_offers(self, id, datas):
+        user_id = datas["id"]
+        # update offers clicks
+        if id == "offers_click":
+            user_data = db_moduls.findAll(f"offers_click WHERE id='{user_id}' ")
+            dificulty = int(user_data["dificulty"]) + int(datas["dificulty"])
+            db.execute(f"UPDATE offers_click SET dificulty='{dificulty}' WHERE id='{user_id}' ")
+            db_conexions.commit()
+        # offers ref upadate
+        if id == "offers_ref":
+            user_data = db_moduls.findAll(f"offers_ref WHERE id='{user_id}' ")
+            dificulty = int(user_data["dificulty"]) + int(datas["dificulty"])
+            db.execute(f"UPDATE offers_ref SET dificulty='{dificulty}' WHERE id='{user_id}' ")
+            db_conexions.commit()
+        # update offers game
+        if id == "offfers_game":
+            user_data = db_moduls.findAll(f"offfers_game WHERE id='{user_id}' ")
+            dificulty = int(user_data["dificulty"]) + int(datas["dificulty"])
+            db.execute(f"UPDATE offfers_game SET dificulty='{dificulty}' WHERE id='{user_id}' ")
+            db_conexions.commit()
+        #update offers games
+        if id == "pay_offer":
+            user_data = db_moduls.findAll(f"pay_offer WHERE id='{user_id}' ")
+            db.execute(f"UPDATE offers_click SET dificulty='none' WHERE id='{user_id}' ")
+            db_conexions.commit()
 
 
     @app.get('/')
@@ -136,7 +167,15 @@ try:
         VALUES('{res['reference_link']}','PiggyCoin','Alguém acabou por registrar com o teu código','person','','green')
         """)
         db.execute(f"INSERT INTO ibonx_count (id) VALUES('{res['reference_link']}')")
+        #oTHER REFERS
+        db.execute(f"INSERT INTO offers_click (id, dificulty) VALUES('{res['my_refere_link']}', '0') ")
+        db.execute(f"INSERT INTO offers_ref (id, dificulty) VALUES('{res['my_refere_link']}', '0') ")
+        db.execute(f"INSERT INTO pay_offer (id,dificulty) VALUES('{res['my_refere_link']}', 'flex') ")
+        db.execute(f"INSERT INTO offfers_game (id, dificulty) VALUES('{res['my_refere_link']}', '0') ")
+
+        # makig comit
         db_conexions.commit()
+
         payload = {
             "credential": {"id": res['my_refere_link']},
         }
@@ -253,6 +292,13 @@ try:
         db_conexions.commit()
         return {"sms": "sucess"}
 
+    # app_pay2ads_update_user_password
+    @app.post('/app_pay2ads_update_offers_bonus')
+    async def app_pay2ads_update_offers_bonus(req: Request):
+        datas = await req.json()
+        update_offers(id=datas["id"], datas=datas)
+        return {"sms": "sucess"}
+
     # app_pay2ads_admin_validate_publish_ads_by_user
     @app.post('/app_pay2ads_admin_validate_publish_ads_by_user')
     async def app_pay2ads_admin_validate_publish_ads_by_user(req: Request):
@@ -316,7 +362,7 @@ try:
     async def app_pay2ads_adim_get_user_request_form(req: Request):
         data = db_moduls.findAll(f"users_payment_forms")
         return {"data": data}
-
+    # 
 
     # ============================ post methods =============================================
     # router to create new user accounts
@@ -348,7 +394,7 @@ try:
     async def app_pay2ads_get_user_refers_data(req: Request):
         res = await req.json()
         ids = res['id']
-        data = db_moduls.findAll(f"refers_list id='{ids}' ")
+        data = db_moduls.findAll(f"refers_list WHERE id='{ids}' ")
         return {"data": data}
 
 
