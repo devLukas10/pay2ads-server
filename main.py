@@ -87,32 +87,26 @@ try:
 # ============================ post methods =============================================
     db_moduls = DBModuls()
 
-    def update_offers(self, ids, datas):
+    def update_offers(self, types, datas):
         user_id = datas["id"]
         # update offers clicks
-        if ids == "offers_click":
+        if types == "offers_click":
             user_data = db_moduls.findAll(f"offers_click WHERE id='{user_id}' ")
             dificulty = int(user_data["dificulty"]) + int(datas["dificulty"])
             db.execute(f"UPDATE offers_click SET dificulty='{dificulty}' WHERE id='{user_id}' ")
             db_conexions.commit()
-        # offers ref upadate
-        if ids == "offers_ref":
-            user_data = db_moduls.findAll(f"offers_ref WHERE id='{user_id}' ")
-            dificulty = int(user_data["dificulty"]) + int(datas["dificulty"])
-            db.execute(f"UPDATE offers_ref SET dificulty='{dificulty}' WHERE id='{user_id}' ")
-            db_conexions.commit()
         # update offers game
-        if ids == "offfers_game":
+        if types == "offfers_game":
             user_data = db_moduls.findAll(f"offfers_game WHERE id='{user_id}' ")
             dificulty = int(user_data["dificulty"]) + int(datas["dificulty"])
             db.execute(f"UPDATE offfers_game SET dificulty='{dificulty}' WHERE id='{user_id}' ")
             db_conexions.commit()
         #update offers games
-        if ids == "pay_offer":
+        if types == "pay_offer":
             user_data = db_moduls.findAll(f"pay_offer WHERE id='{user_id}' ")
             db.execute(f"UPDATE offers_click SET dificulty='none' WHERE id='{user_id}' ")
             db_conexions.commit()
-    
+
 
     @app.get('/')
     async def api(req: Request):
@@ -296,7 +290,7 @@ try:
     @app.post('/app_pay2ads_update_offers_bonus')
     async def app_pay2ads_update_offers_bonus(req: Request):
         datas = await req.json()
-        update_offers(id=datas["id"], datas=datas)
+        update_offers(types=datas["types"], datas=datas)
         return {"sms": "sucess"}
 
     # app_pay2ads_admin_validate_publish_ads_by_user
