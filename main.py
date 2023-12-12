@@ -264,7 +264,7 @@ try:
             (id, username, back_name, iban, number, valor, created_at)
             VALUES(
                 '{ids}','{res['username']}','{res['back_name']}','{res['iban']}',
-                '{res['number']}','{res['valor']}','{res['created_at']}'
+                '{res['number']}','{res['currency']}','{res['created_at']}'
             )
         """)
         db_conexions.commit()
