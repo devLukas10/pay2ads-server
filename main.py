@@ -158,7 +158,7 @@ try:
             VALUES('{res['reference_link']}', '{res['username']}', '{res['email']}')
         """)
         db.execute(f"""INSERT INTO ibonx (id, titler, sms, icon, state, color)
-        VALUES('{res['reference_link']}','PiggyCoin','Alguém acabou por registrar com o teu código','person','','green')
+        VALUES('{res['reference_link']}','PiggyCoin','Alguém acabou por registrar com o teu código vá página de referências para ver quem foi.','person','','transparent')
         """)
         db.execute(f"INSERT INTO ibonx_count (id) VALUES('{res['reference_link']}')")
         # makig comit
