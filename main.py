@@ -274,7 +274,7 @@ try:
     async def app_pay2ads_create_users_ibonxs(req: Request):
         res = await req.json()
         db.execute(f"""INSERT INTO ibonx (id, titler, sms, icon, state, color)
-        VALUES('{res['id']}','{res['titler']}','{res['sms']}','{res['icon']}','{res['state']},'{res['color']}')
+        VALUES('{res['id']}','{res['titler']}','{res['sms']}','{res['icon']}','{res['state']}','{res['color']}')
         """)
         db.execute(f"INSERT INTO ibonx_count (id) VALUES('{res['id']}')")
         return {"sms": "sucess"}
