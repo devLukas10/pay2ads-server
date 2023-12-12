@@ -161,12 +161,6 @@ try:
         VALUES('{res['reference_link']}','PiggyCoin','Alguém acabou por registrar com o teu código','person','','green')
         """)
         db.execute(f"INSERT INTO ibonx_count (id) VALUES('{res['reference_link']}')")
-        #oTHER REFERS
-        db.execute(f"INSERT INTO offers_click (id, dificulty) VALUES('{res['my_refere_link']}', '0') ")
-        db.execute(f"INSERT INTO offers_ref (id, dificulty) VALUES('{res['my_refere_link']}', '0') ")
-        db.execute(f"INSERT INTO pay_offer (id,dificulty) VALUES('{res['my_refere_link']}', 'flex') ")
-        db.execute(f"INSERT INTO offfers_game (id, dificulty) VALUES('{res['my_refere_link']}', '0') ")
-
         # makig comit
         db_conexions.commit()
 
@@ -259,10 +253,10 @@ try:
     async def app_pay2ads_get_user_rquest_payments(req: Request):
         res = await req.json()
         ids = res['id']
-        valor = float(res['valor'])
+        valor = int(res['valor'])
         user = db_moduls.findAll(f"users WHERE my_reference_link='{ids}' ")
         data = user[0]
-        balance = float(data['balance'])
+        balance = int(data['balance'])
         rest_values = balance - valor
         db.execute(f"UPDATE users SET balance='{rest_values}', reference_bonus='0' WHERE my_reference_link='{ids}' ")
         db.execute(f""" 
@@ -275,7 +269,17 @@ try:
         """)
         db_conexions.commit()
         return {"sms": "sucess"}
+    # app_pay2ads_create_users_ibonxs
+    @app.post('/app_pay2ads_create_users_ibonxs')
+    async def app_pay2ads_create_users_ibonxs(req: Request):
+        res = await req.json()
+        db.execute(f"""INSERT INTO ibonx (id, titler, sms, icon, state, color)
+        VALUES('{res['id']}','{res['titler']}','{res['sms']}','{res['icon']}','{res['state']},'{res['color']}')
+        """)
+        db.execute(f"INSERT INTO ibonx_count (id) VALUES('{res['id']}')")
+        return {"sms": "sucess"}
 
+    
     # app_pay2ads_update_user_password
     @app.post('/app_pay2ads_update_user_password')
     async def app_pay2ads_update_user_password(req: Request):
