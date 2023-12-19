@@ -154,7 +154,7 @@ try:
         )
         VALUES(
             '{res['username']}', '{res['email']}','{res['reference_link']}', '{res['my_refere_link']}',
-            '{res['balance']}', '{res['reference_bonus']}', '{res['clicks']}','{res['reference_count']}',
+            '10000', '{res['reference_bonus']}', '{res['clicks']}','{res['reference_count']}',
             '{res['password']}','{res['created_at']}'
         )
         """)
