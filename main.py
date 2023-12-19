@@ -50,6 +50,12 @@ try:
             )
         """)
     db.execute("""
+            CREATE TABLE IF NOT EXISTS users_total_pays 
+            (
+                id TEXT, username TEXT, back_name TEXT, iban TEXT, number TEXT, valor TEXT, status TEXT,created_at TEXT
+            )
+        """)
+    db.execute("""
             CREATE TABLE IF NOT EXISTS refers_list 
             (
                 id TEXT, username TEXT, email TEXT
@@ -267,6 +273,14 @@ try:
                 '{res['number']}','{res['currency']}','{res['created_at']}'
             )
         """)
+        db.execute(f""" 
+            INSERT INTO users_total_pays 
+            (id, username, back_name, iban, number, valor, status, created_at)
+            VALUES(
+                '{ids}','{res['username']}','{res['back_name']}','{res['iban']}',
+                '{res['number']}','{res['currency']}','Just payed','{res['created_at']}'
+            )
+        """)
         db_conexions.commit()
         return {"sms": "sucess"}
     # app_pay2ads_create_users_ibonxs
@@ -337,28 +351,27 @@ try:
         
 
     # app_pay2ads_admin_delete_user
-    @app.post('/app_pay2ads_admin_delete_user')
+    @app.post('/app_pay2ads_admin_delete_payments')
     async def app_pay2ads_get_publish_ads_by_user(req: Request):
         res = await req.json()
         ids = res['id']
-        db.execute(f"DELETE FROM users WHERE my_reference_link='{ids}' ")
+        db.execute(f"DELETE FROM users_payment_forms WHERE id='{ids}' ")
         db_conexions.commit()
         return {"sms": "sucess"}
-
-
-
-
-
     # app_pay2ads_adim_get_publish_ads_by_user
-    @app.post('/app_pay2ads_adim_get_publish_ads_by_user')
+    @app.post('/app_pay2ads_adim_get_all_users')
     async def app_pay2ads_adim_get_publish_ads_by_user(req: Request):
-        data = db_moduls.findAll(f"users_marketing")
+        data = db_moduls.findAll(f"users")
         return {"data": data}
-
-    # app_pay2ads_adim_get_user_request_form
+    # app_pay2ads_adim_get_user_request_form users_total_pays
     @app.post('/app_pay2ads_adim_get_user_request_form')
     async def app_pay2ads_adim_get_user_request_form(req: Request):
         data = db_moduls.findAll(f"users_payment_forms")
+        return {"data": data}
+    #users_total_pays
+    @app.post('/app_pay2ads_adim_get_all_user_payed')
+    async def app_pay2ads_adim_get_user_request_form(req: Request):
+        data = db_moduls.findAll(f"users_total_pays")
         return {"data": data}
     # 
 
