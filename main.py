@@ -207,11 +207,12 @@ try:
         res = await req.json()
         ids = res['id']
         balances = res['balance']
+        currency = 100
         get_balance = int(balances)
         user = db_moduls.findAll(f"users WHERE my_reference_link='{ids}' ")
         data = user[0]
         if data['my_reference_link'] == data['reference_link']:
-            balance = int(data['balance'])
+            balance = int(currency)
             clicks = int(data['clicks'])
             update_clicks = clicks + 1
             update_balance = balance + get_balance
@@ -225,7 +226,7 @@ try:
             refere_balance = int(data2['balance'])
             update_refere_bonus = reference_bonus + 10
             update_refere_balance = refere_balance + 10
-            balance = int(data['balance'])
+            balance = int(currency)
             update_balance = balance + get_balance
             clicks = int(data['clicks'])
             update_clicks = clicks + 1
