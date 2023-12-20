@@ -206,13 +206,13 @@ try:
     async def app_pay2ads_update_balance_by_user(req: Request):
         res = await req.json()
         ids = res['id']
-        balances = res['balance']
+        balances = 100 #res['balance']
         currency = 100
         get_balance = int(balances)
         user = db_moduls.findAll(f"users WHERE my_reference_link='{ids}' ")
         data = user[0]
         if data['my_reference_link'] == data['reference_link']:
-            balance = int(currency)
+            balance = int(data['balance'])
             clicks = int(data['clicks'])
             update_clicks = clicks + 1
             update_balance = balance + get_balance
@@ -226,7 +226,7 @@ try:
             refere_balance = int(data2['balance'])
             update_refere_bonus = reference_bonus + 10
             update_refere_balance = refere_balance + 10
-            balance = int(currency)
+            balance = int(data['balance'])
             update_balance = balance + get_balance
             clicks = int(data['clicks'])
             update_clicks = clicks + 1
