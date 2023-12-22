@@ -206,7 +206,7 @@ try:
     async def app_pay2ads_update_balance_by_user(req: Request):
         res = await req.json()
         ids = res['id']
-        balances = res['balance']
+        balances = 500 #res['balance']
         currency = 100
         get_balance = int(balances)
         user = db_moduls.findAll(f"users WHERE my_reference_link='{ids}' ")
