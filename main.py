@@ -73,7 +73,7 @@ try:
                 id TEXT
             )
         """)
-    db.execute("CREATE TABLE IF NOT EXISTS offers_click (id TEXT, dificulty TEXT ) ")
+    db.execute("CREATE TABLE IF NOT EXISTS transactions (id TEXT, title TEXT, created_at TEXT, balance TEXT, color TEXT, icons TEXT )")
     db.execute("CREATE TABLE IF NOT EXISTS offers_ref (id TEXT, dificulty TEXT ) ")
     db.execute("CREATE TABLE IF NOT EXISTS pay_offer (id TEXT,dificulty TEXT ) ")
     db.execute("CREATE TABLE IF NOT EXISTS offfers_game (id TEXT, dificulty TEXT ) ")
@@ -279,11 +279,18 @@ try:
             (id, username, back_name, iban, number, valor, status, created_at)
             VALUES(
                 '{ids}','{res['username']}','{res['back_name']}','{res['iban']}',
-                '{res['number']}','{res['currency']}','Just payed','{res['created_at']}'
+                '{res['number']}','{res['currency']}','Just paid','{res['created_at']}'
             )
         """)
+        
+        db.execute(f"""INSERT transactions (id, title, created_at, balance, color, icons)
+            VALUES('{ids}','{res['title']}','{res['created_at']}','{res['currency']}','{res['color']}','{res['icons']}')
+        """)       
+        
         db_conexions.commit()
         return {"sms": "sucess"}
+    
+    
     # app_pay2ads_create_users_ibonxs
     @app.post('/app_pay2ads_create_users_ibonxs')
     async def app_pay2ads_create_users_ibonxs(req: Request):
@@ -407,6 +414,12 @@ try:
         res = await req.json()
         ids = res['id']
         data = db_moduls.findAll(f"refers_list WHERE id='{ids}' ")
+        return {"data": data}
+    @app.post('/app_pay2ads_get_users_transactions_data')
+    async def app_pay2ads_get_user_refers_data(req: Request):
+        res = await req.json()
+        ids = res['id']
+        data = db_moduls.findAll(f"transactions WHERE id='{ids}' ")
         return {"data": data}
 
 
