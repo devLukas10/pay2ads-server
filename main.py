@@ -283,7 +283,7 @@ try:
             )
         """)
         
-        db.execute(f"""INSERT transactions (id, title, created_at, balance, color, icons)
+        db.execute(f"""INSERT INTO transactions (id, title, created_at, balance, color, icons)
             VALUES('{ids}','{res['title']}','{res['created_at']}','{res['currency']}','{res['color']}','{res['icons']}')
         """)       
         
