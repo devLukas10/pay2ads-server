@@ -74,10 +74,10 @@ try:
             )
         """)
     db.execute("CREATE TABLE IF NOT EXISTS transactions (id TEXT, title TEXT, created_at TEXT, balance TEXT, color TEXT, icons TEXT )")
-    db.execute("CREATE TABLE IF NOT EXISTS offers_ref (id TEXT, dificulty TEXT ) ")
-    db.execute("CREATE TABLE IF NOT EXISTS pay_offer (id TEXT,dificulty TEXT ) ")
-    db.execute("CREATE TABLE IF NOT EXISTS offfers_game (id TEXT, dificulty TEXT ) ")
-        
+    db.execute("CREATE TABLE IF NOT EXISTS post_views (postId TEXT, userId TEXT, created_at TEXT)")
+    db.execute("CREATE TABLE IF NOT EXISTS post_cpm (postId TEXT, userId TEXT, balance TEXT, created_at TEXT)")
+    db.execute("CREATE TABLE IF NOT EXISTS post_cpa (postId TEXT, userId TEXT, balance TEXT, created_at TEXT)")
+    db.execute("CREATE TABLE IF NOT EXISTS post_bonus (postId TEXT, userId TEXT, balance TEXT, created_at TEXT)")
     db_conexions.commit()
 #================================================================================
     # convert data to json files
@@ -204,6 +204,10 @@ try:
     # app_pay2ads_update_balance_by_user
     @app.post('/app_pay2ads_update_balance_by_user')
     async def app_pay2ads_update_balance_by_user(req: Request):
+        return {"sms": "sucess users"}
+    # app_pay2ads_update_balance_by_user
+    @app.post('/app_piggy_update_balance_by_user')
+    async def app_pay2ads_update_balance_by_user(req: Request):
         res = await req.json()
         ids = res['id']
         balances = res['balance']
@@ -238,7 +242,6 @@ try:
             """)
             db_conexions.commit()
             return {"sms": "sucess users"}
-
 
     # app_pay2ads_get_publish_ads_by_user
     @app.post('/app_pay2ads_get_publish_ads_by_user')
@@ -282,13 +285,15 @@ try:
                 '{res['number']}','{res['currency']}','Just paid','{res['created_at']}'
             )
         """)
-        
         db.execute(f"""INSERT INTO transactions (id, title, created_at, balance, color, icons)
             VALUES('{ids}','{res['title']}','{res['created_at']}','{res['currency']}','{res['color']}','{res['icons']}')
         """)       
-        
+        db.execute("UPDATE post_cpm SET balance='0' WHERE userId='{ids}' ")
+        db.execute("UPDATE post_cpa SET balance='0' WHERE userId='{ids}' ")
+        db.execute("UPDATE post_bonus SET balance='0' WHERE userId='{ids}' ")
         db_conexions.commit()
         return {"sms": "sucess"}
+        
     
     
     # app_pay2ads_create_users_ibonxs
@@ -416,21 +421,69 @@ try:
         data = db_moduls.findAll(f"refers_list WHERE id='{ids}' ")
         return {"data": data}
     @app.post('/app_pay2ads_get_users_transactions_data')
-    async def app_pay2ads_get_user_refers_data(req: Request):
+    async def app_pay2ads_get_users_transactions_data(req: Request):
         res = await req.json()
         ids = res['id']
         data = db_moduls.findAll(f"transactions WHERE id='{ids}' ")
         return {"data": data}
 
-
-
-
-
-
+    # ============================ post methods for business =============================================
+    # insert for views post
+    @app.post('/app_pay2ads_create_business_datas_post')
+    async def app_pay2ads_create_business_datas_post(req: Request):
+        res = await req.json()
+        postId = res['postId']
+        userId = res['userId']
+        created_at = res['created_at']
+        new_balances = res['balance']
+        items = db_moduls.findAll(f"post_cpm WHERE postId='{postId}' ")
+        db.execute(f"INSERT INTO post_views (postId, userId, created_at) VALUES('{postId}','{userId}','{created_at}')")
+        db_conexions.commit()
+        if len(items) == 0:
+            db.execute("INSERT INTO post_cpm (postId, userId, balance, created_at) VALUES('{postId}','{userId}','{new_balances}','{created_at}') ")
+            db.execute("INSERT INTO post_cpa (postId, userId, balance, created_at) VALUES('{postId}','{userId}','{new_balances}','{created_at}') ")
+            db.execute("INSERT INTO post_bonus (postId, userId, balance, created_at) VALUES('{postId}','{userId}','{new_balances}','{created_at}') ")
+            db_conexions.commit()
+        else:
+            data_1 = db_moduls.findAll(f"post_cpm WHERE postId='{postId}' ")
+            data_2 = db_moduls.findAll(f"post_cpa WHERE postId='{postId}' ")
+            data_3 = db_moduls.findAll(f"post_bonus WHERE postId='{postId}' ")
+            ls_1 = data_1[0]
+            ls_2 = data_2[0]
+            ls_3 = data_3[0]
+            update_balance_1 = int(ls_1['balance']) + int(new_balances)
+            update_balance_2 = int(ls_2['balance']) + int(new_balances)
+            update_balance_3 = int(ls_3['balance']) + int(new_balances)
+            db.execute("UPDATE post_cpm SET balance='{update_balance_1}' WHERE postId='{postId}' AND userId='{userId}' ")
+            db.execute("UPDATE post_cpa SET balance='{update_balance_2}' WHERE postId='{postId}' AND userId='{userId}' ")
+            db.execute("UPDATE post_bonus SET balance='{update_balance_3}' WHERE postId='{postId}' AND userId='{userId}' ")
+            db_conexions.commit()
     
-
-
-
+    # gettings business datas
+    @app.post('/app_pay2ads_get_users_post_data_views')
+    async def app_pay2ads_get_users_post_data_views(req: Request):
+        res = await req.json()
+        userId = res['userId']
+        data = db_moduls.findAll(f"post_views WHERE userId='{userId}' ")
+        return {"data": data}
+    @app.post('/app_pay2ads_get_users_post_data_cpm')
+    async def app_pay2ads_get_users_post_data_cpm(req: Request):
+        res = await req.json()
+        userId = res['userId']
+        data = db_moduls.findAll(f"post_cpm WHERE userId='{userId}' ")
+        return {"data": data}
+    @app.post('/app_pay2ads_get_users_post_data_cpa')
+    async def app_pay2ads_get_users_post_data_cpa(req: Request):
+        res = await req.json()
+        userId = res['userId']
+        data = db_moduls.findAll(f"post_cpa WHERE userId='{userId}' ")
+        return {"data": data}
+    @app.post('/app_pay2ads_get_users_post_data_bonus')
+    async def app_pay2ads_get_users_post_data_bonus(req: Request):
+        res = await req.json()
+        userId = res['userId']
+        data = db_moduls.findAll(f"post_bonus WHERE userId='{userId}' ")
+        return {"data": data}
 
 
 
