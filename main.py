@@ -462,12 +462,12 @@ try:
     @app.post('/app_pay2ads_create_post_views')
     async def app_pay2ads_create_post_views(req: Request):
         res = await req.json()
-        postId = res['postId']
-        userId = res['userId']
+        #postId = res['postId']
+        #userId = res['userId']
         print(res)
-        created_at = res['created_at']
-        db.execute(f"INSERT INTO post_views (postId, userId, created_at) VALUES('{postId}','{userId}','{created_at}')")
-        db_conexions.commit()
+        #created_at = res['created_at']
+        #db.execute(f"INSERT INTO post_views (postId, userId, created_at) VALUES('{postId}','{userId}','{created_at}')")
+       # db_conexions.commit()
     @app.post('/app_pay2ads_create_post_likes')
     async def app_pay2ads_create_post_likes(req: Request):
         res = await req.json()
