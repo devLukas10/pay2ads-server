@@ -488,6 +488,13 @@ try:
 
 
     # gettings business datas
+    @app.post('/app_pay2ads_get_users_post_data_on_view')
+    async def app_pay2ads_get_users_post_data_on_view(req: Request):
+        res = await req.json()
+        postId = res['postId']
+        data = db_moduls.findAll(f"post_views WHERE postId='{postId}' ")
+        return {"data": data}
+    # gettings business datas
     @app.post('/app_pay2ads_get_users_post_data_views')
     async def app_pay2ads_get_users_post_data_views(req: Request):
         res = await req.json()
