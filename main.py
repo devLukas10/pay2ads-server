@@ -78,6 +78,8 @@ try:
     db.execute("CREATE TABLE IF NOT EXISTS post_cpm (postId TEXT, userId TEXT, balance TEXT, created_at TEXT)")
     db.execute("CREATE TABLE IF NOT EXISTS post_cpa (postId TEXT, userId TEXT, balance TEXT, created_at TEXT)")
     db.execute("CREATE TABLE IF NOT EXISTS post_bonus (postId TEXT, userId TEXT, balance TEXT, created_at TEXT)")
+    db.execute("CREATE TABLE IF NOT EXISTS post_likes (postId TEXT, userId TEXT, likes TEXT, created_at TEXT)")
+    db.execute("CREATE TABLE IF NOT EXISTS post_comments (postId TEXT, usename TEXT, comments TEXT, created_at TEXT)")
     db_conexions.commit()
 #================================================================================
     # convert data to json files
@@ -207,7 +209,7 @@ try:
         return {"sms": "sucess users"}
     # app_pay2ads_update_balance_by_user
     @app.post('/app_piggy_update_balance_by_user')
-    async def app_pay2ads_update_balance_by_user(req: Request):
+    async def app_piggy_update_balance_by_user(req: Request):
         res = await req.json()
         ids = res['id']
         balances = res['balance']
@@ -437,12 +439,10 @@ try:
         created_at = res['created_at']
         new_balances = res['balance']
         items = db_moduls.findAll(f"post_cpm WHERE postId='{postId}' ")
-        db.execute(f"INSERT INTO post_views (postId, userId, created_at) VALUES('{postId}','{userId}','{created_at}')")
-        db_conexions.commit()
         if len(items) == 0:
-            db.execute("INSERT INTO post_cpm (postId, userId, balance, created_at) VALUES('{postId}','{userId}','{new_balances}','{created_at}') ")
+            db.execute("INSERT INTO post_cpm (postId, userId, balance, created_at) VALUES('{postId}','{userId}','10','{created_at}') ")
             db.execute("INSERT INTO post_cpa (postId, userId, balance, created_at) VALUES('{postId}','{userId}','{new_balances}','{created_at}') ")
-            db.execute("INSERT INTO post_bonus (postId, userId, balance, created_at) VALUES('{postId}','{userId}','{new_balances}','{created_at}') ")
+            db.execute("INSERT INTO post_bonus (postId, userId, balance, created_at) VALUES('{postId}','{userId}','2','{created_at}') ")
             db_conexions.commit()
         else:
             data_1 = db_moduls.findAll(f"post_cpm WHERE postId='{postId}' ")
@@ -451,14 +451,46 @@ try:
             ls_1 = data_1[0]
             ls_2 = data_2[0]
             ls_3 = data_3[0]
-            update_balance_1 = int(ls_1['balance']) + int(new_balances)
+            update_balance_1 = int(ls_1['balance']) + int(10)
             update_balance_2 = int(ls_2['balance']) + int(new_balances)
-            update_balance_3 = int(ls_3['balance']) + int(new_balances)
+            update_balance_3 = int(ls_3['balance']) + int(2)
             db.execute("UPDATE post_cpm SET balance='{update_balance_1}' WHERE postId='{postId}' AND userId='{userId}' ")
             db.execute("UPDATE post_cpa SET balance='{update_balance_2}' WHERE postId='{postId}' AND userId='{userId}' ")
             db.execute("UPDATE post_bonus SET balance='{update_balance_3}' WHERE postId='{postId}' AND userId='{userId}' ")
             db_conexions.commit()
-    
+    # insert for views post
+    @app.post('/app_pay2ads_create_post_views')
+    async def app_pay2ads_create_post_views(req: Request):
+        res = await req.json()
+        postId = res['postId']
+        userId = res['userId']
+        created_at = res['created_at']
+        db.execute(f"INSERT INTO post_views (postId, userId, created_at) VALUES('{postId}','{userId}','{created_at}')")
+        db_conexions.commit()
+    @app.post('/app_pay2ads_create_post_likes')
+    async def app_pay2ads_create_post_likes(req: Request):
+        res = await req.json()
+        postId = res['postId']
+        userId = res['userId']
+        likes = res['likes']
+        created_at = res['created_at']
+        db.execute(f"INSERT INTO post_likes (postId, userId, likes, created_at) VALUES('{postId}','{userId}','{likes}','{created_at}')")
+        db_conexions.commit()
+    @app.post('/app_pay2ads_create_post_comments')
+    async def app_pay2ads_create_post_comments(req: Request):
+        res = await req.json()
+        postId = res['postId']
+        usename = res['usename']
+        comments = res['comments']
+        created_at = res['created_at']
+        db.execute(f"INSERT INTO post_comments (postId, usename, comments, created_at) VALUES('{postId}','{usename}','{comments}','{created_at}')")
+        db_conexions.commit()
+
+
+
+
+
+
     # gettings business datas
     @app.post('/app_pay2ads_get_users_post_data_views')
     async def app_pay2ads_get_users_post_data_views(req: Request):
@@ -466,6 +498,22 @@ try:
         userId = res['userId']
         data = db_moduls.findAll(f"post_views WHERE userId='{userId}' ")
         return {"data": data}
+    # gettings business datas
+    @app.post('/app_pay2ads_get_users_post_data_likes')
+    async def app_pay2ads_get_users_post_data_likes(req: Request):
+        res = await req.json()
+        postId = res['postId']
+        data = db_moduls.findAll(f"post_likes WHERE postId='{postId}' ")
+        return {"data": data}
+    # gettings business datas
+    @app.post('/app_pay2ads_get_users_post_data_comments')
+    async def app_pay2ads_get_users_post_data_comments(req: Request):
+        res = await req.json()
+        postId = res['postId']
+        data = db_moduls.findAll(f"post_comments WHERE postId='{postId}' ")
+        return {"data": data}
+
+
     @app.post('/app_pay2ads_get_users_post_data_cpm')
     async def app_pay2ads_get_users_post_data_cpm(req: Request):
         res = await req.json()
