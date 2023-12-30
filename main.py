@@ -438,25 +438,21 @@ try:
         userId = res['userId']
         created_at = res['created_at']
         new_balances = res['balance']
-        items = db_moduls.findAll(f"post_cpm WHERE postId='{postId}' ")
+        items = db_moduls.findAll(f"post_cpa WHERE postId='{postId}' ")
         if len(items) == 0:
-            db.execute("INSERT INTO post_cpm (postId, userId, balance, created_at) VALUES('{postId}','{userId}','10','{created_at}') ")
-            db.execute("INSERT INTO post_cpa (postId, userId, balance, created_at) VALUES('{postId}','{userId}','{new_balances}','{created_at}') ")
-            db.execute("INSERT INTO post_bonus (postId, userId, balance, created_at) VALUES('{postId}','{userId}','2','{created_at}') ")
+            db.execute(f"INSERT INTO post_cpa (postId, userId, balance, created_at) VALUES('{postId}','{userId}','{new_balances}','{created_at}') ")
+            db.execute(f"INSERT INTO post_bonus (postId, userId, balance, created_at) VALUES('{postId}','{userId}','20','{created_at}') ")
             db_conexions.commit()
         else:
-            data_1 = db_moduls.findAll(f"post_cpm WHERE postId='{postId}' ")
             data_2 = db_moduls.findAll(f"post_cpa WHERE postId='{postId}' ")
             data_3 = db_moduls.findAll(f"post_bonus WHERE postId='{postId}' ")
-            ls_1 = data_1[0]
             ls_2 = data_2[0]
             ls_3 = data_3[0]
-            update_balance_1 = int(ls_1['balance']) + int(10)
             update_balance_2 = int(ls_2['balance']) + int(new_balances)
-            update_balance_3 = int(ls_3['balance']) + int(2)
-            db.execute("UPDATE post_cpm SET balance='{update_balance_1}' WHERE postId='{postId}' AND userId='{userId}' ")
-            db.execute("UPDATE post_cpa SET balance='{update_balance_2}' WHERE postId='{postId}' AND userId='{userId}' ")
-            db.execute("UPDATE post_bonus SET balance='{update_balance_3}' WHERE postId='{postId}' AND userId='{userId}' ")
+            update_balance_3 = int(ls_3['balance']) + int(20)
+            db.execute(f"UPDATE post_cpa SET balance='{update_balance_2}' WHERE postId='{postId}' ")
+            db.execute(f"UPDATE post_bonus SET balance='{update_balance_3}' WHERE postId='{postId}' ")
+            print(res)
             db_conexions.commit()
     # insert for views post
     @app.post('/app_pay2ads_create_post_views')
@@ -513,13 +509,6 @@ try:
         data = db_moduls.findAll(f"post_comments WHERE postId='{postId}' ")
         return {"data": data}
 
-
-    @app.post('/app_pay2ads_get_users_post_data_cpm')
-    async def app_pay2ads_get_users_post_data_cpm(req: Request):
-        res = await req.json()
-        userId = res['userId']
-        data = db_moduls.findAll(f"post_cpm WHERE userId='{userId}' ")
-        return {"data": data}
     @app.post('/app_pay2ads_get_users_post_data_cpa')
     async def app_pay2ads_get_users_post_data_cpa(req: Request):
         res = await req.json()
