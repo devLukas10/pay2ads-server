@@ -464,6 +464,7 @@ try:
         res = await req.json()
         postId = res['postId']
         userId = res['userId']
+        print(res)
         created_at = res['created_at']
         db.execute(f"INSERT INTO post_views (postId, userId, created_at) VALUES('{postId}','{userId}','{created_at}')")
         db_conexions.commit()
